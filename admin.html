@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Absensi</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f7f9fc; }
+    .container { background: white; padding: 20px; border-radius: 10px; max-width: 900px; margin: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background: #e9ecef; }
+    button { padding: 10px 15px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Dashboard Admin - Absensi Guru</h2>
+    <button onclick="exportCSV()">Ekspor ke CSV</button>
+    <table>
+      <thead><tr><th>Nama</th><th>Waktu</th><th>Catatan</th></tr></thead>
+      <tbody id="absenData"></tbody>
+    </table>
+  </div>
+  <script>
+    if (localStorage.getItem("role") !== "admin") location.href = "login.html";
+    const data = JSON.parse(localStorage.getItem("absensi") || "[]");
+    const tbody = document.getElementById("absenData");
+    data.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${row.nama}</td><td>${row.waktu}</td><td>${row.catatan || "-"}</td>`;
+      tbody.appendChild(tr);
+    });
+    function exportCSV() {
+      const csv = ["Nama,Waktu,Catatan"];
+      data.forEach(row => {
+        csv.push(`"${row.nama}","${row.waktu}","${row.catatan?.replace(/"/g, '""') || ''}"`);
+      });
+      const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "absensi_guru.csv";
+      a.click();
+    }
+  </script>
+</body>
+</html>

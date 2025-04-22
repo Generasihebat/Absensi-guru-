@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi Guru</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #eef2f7; }
+    .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; }
+    h2 { text-align: center; }
+    textarea, button { width: 100%; margin-top: 15px; padding: 10px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Halo, <span id="guruName"></span></h2>
+    <textarea id="catatan" placeholder="Catatan (opsional)..."></textarea>
+    <button onclick="submitAbsen()">Absen Hadir</button>
+  </div>
+  <script>
+    const nama = localStorage.getItem("user");
+    if (!nama || localStorage.getItem("role") !== "guru") location.href = "login.html";
+    document.getElementById("guruName").textContent = nama;
+    function submitAbsen() {
+      const catatan = document.getElementById("catatan").value.trim();
+      const data = JSON.parse(localStorage.getItem("absensi") || "[]");
+      data.push({ nama: nama, waktu: new Date().toLocaleString("id-ID"), catatan: catatan });
+      localStorage.setItem("absensi", JSON.stringify(data));
+      alert("Absensi berhasil!");
+      document.getElementById("catatan").value = "";
+    }
+  </script>
+</body>
+</html>
